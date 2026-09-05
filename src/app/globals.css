@@ -1,26 +1,75 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fdf8f6;
+  --foreground: #1c1b1a;
+
+  /* Sovereign Archetype - Core Surfaces */
+  --surface: #fdf8f6;
+  --surface-dim: #ddd9d7;
+  --surface-bright: #fdf8f6;
+  --surface-container-low: #f7f3f0;
+  --surface-container: #f2edeb;
+  --surface-container-high: #ece7e5;
+  
+  /* Sovereign Archetype - Inks */
+  --on-surface: #1c1b1a;
+  --on-surface-variant: #5a413d;
+  --outline: #8e706c;
+  --outline-variant: #e2beba;
+  
+  /* Sovereign Archetype - Primary Accent */
+  --primary: #961310;
+  --on-primary: #ffffff;
+  --primary-container: #b82e25;
+  --on-primary-container: #ffd5d0;
+  
+  /* Sovereign Archetype - Secondary & Tertiary */
+  --secondary: #655d53;
+  --on-secondary: #ffffff;
+  --secondary-container: #e9ded1;
+  --on-secondary-container: #696157;
+  
+  --tertiary: #7a362c;
+  --on-tertiary: #ffffff;
+  --tertiary-container: #974d41;
+  --on-tertiary-container: #ffd5cf;
+
+  --error: #ba1a1a;
+  --on-error: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  
+  --font-sans: var(--font-plus-jakarta), sans-serif;
+  --font-heading: var(--font-outfit), sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
