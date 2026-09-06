@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAssessment } from "@/context/AssessmentContext";
 import { calculatePersonality, PersonalityProfile } from "@/lib/engine";
 import UnlockModal from "@/components/UnlockModal";
+import { motion } from "framer-motion";
 
 export default function ReportPage() {
   const { answers } = useAssessment();
@@ -53,7 +54,12 @@ export default function ReportPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col gap-12 border border-[#eae8e3]">
+          <motion.div 
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="bg-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden flex flex-col gap-12 border border-[#eae8e3]"
+          >
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-10">
               <div className="flex-1">
                 <span className="font-sans text-[11px] font-bold text-secondary uppercase tracking-widest block mb-2">
@@ -77,15 +83,25 @@ export default function ReportPage() {
               </div>
               
               {/* Visual Monogram */}
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-surface-container-low flex flex-col items-center justify-center text-center p-4 shadow-sm self-center md:self-start">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.4, type: "spring" }}
+                className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-surface-container-low flex flex-col items-center justify-center text-center p-4 shadow-sm self-center md:self-start"
+              >
                 <span className="material-symbols-outlined text-primary text-[48px] mb-1">explore</span>
                 <span className="font-sans text-[11px] font-bold text-on-surface uppercase tracking-widest">Type IV</span>
                 <span className="font-sans text-[11px] text-secondary mt-1">SE-Index: 88.4</span>
-              </div>
+              </motion.div>
             </div>
 
             {/* Narrative Summary */}
-            <div className="bg-[#fdfdfc] border border-[#eae8e3] rounded-2xl p-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="bg-[#fdfdfc] border border-[#eae8e3] rounded-2xl p-6"
+            >
               <h4 className="font-sans font-semibold text-lg text-on-surface mb-2 flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary text-[20px]">auto_stories</span>
                 <span>Diagnostic Summary</span>
@@ -93,8 +109,8 @@ export default function ReportPage() {
               <p className="font-sans text-[15px] text-on-surface-variant leading-relaxed">
                 {profile.description}
               </p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* STAGE 5: DIMENSIONS & PAYWALL */}
@@ -118,7 +134,13 @@ export default function ReportPage() {
                       </span>
                     </div>
                     <div className="w-full h-2.5 bg-surface-container rounded-full overflow-hidden relative">
-                      <div className={`h-full ${dim.colorClass} rounded-full transition-all duration-1000`} style={{ width: `${dim.score}%` }}></div>
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${dim.score}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.5, ease: "easeOut", delay: idx * 0.2 }}
+                        className={`h-full ${dim.colorClass} rounded-full`} 
+                      />
                     </div>
                     <div className="flex justify-between text-[11px] font-sans font-medium text-secondary mt-1">
                       <span>{dim.leftLabel}</span>

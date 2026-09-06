@@ -1,6 +1,22 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
+import FaqAccordion from "@/components/FaqAccordion";
 
 export default function LandingPage() {
+  const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
@@ -38,20 +54,25 @@ export default function LandingPage() {
       <main className="w-full pt-20 bg-background min-h-screen">
         <section className="flex flex-col w-full">
           {/* Hero Section */}
-          <div className="max-w-[1200px] mx-auto px-5 lg:px-10 pt-24 pb-32 flex flex-col items-center text-center">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container mb-6 shadow-sm">
+          <motion.div 
+            initial="hidden" 
+            animate="visible" 
+            variants={staggerContainer}
+            className="max-w-[1200px] mx-auto px-5 lg:px-10 pt-24 pb-32 flex flex-col items-center text-center"
+          >
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container mb-6 shadow-sm">
               <span className="material-symbols-outlined text-primary text-[14px]">psychology_alt</span>
               <span className="font-sans text-[11px] font-bold text-secondary uppercase tracking-widest">
                 Personality • Preferences • Insights
               </span>
-            </div>
-            <h1 className="font-heading text-5xl md:text-[56px] max-w-[880px] text-on-surface font-semibold tracking-tight leading-tight mb-6">
+            </motion.div>
+            <motion.h1 variants={fadeUp} className="font-heading text-5xl md:text-[56px] max-w-[880px] text-on-surface font-semibold tracking-tight leading-tight mb-6">
               Understand Yourself <span className="text-primary-container">Like Never Before.</span>
-            </h1>
-            <p className="font-sans text-lg text-on-surface-variant max-w-[660px] mb-12">
+            </motion.h1>
+            <motion.p variants={fadeUp} className="font-sans text-lg text-on-surface-variant max-w-[660px] mb-12">
               Discover the traits, preferences, and behavioural patterns that make you uniquely you — through an architectural, evidence-guided self-discovery experience.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-12">
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-center gap-4 mb-12">
               <Link
                 href="/assessment"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#31302f] hover:bg-primary text-on-primary font-sans font-semibold text-lg rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-0.5 group"
@@ -65,10 +86,10 @@ export default function LandingPage() {
               >
                 Read the FAQ
               </a>
-            </div>
+            </motion.div>
 
             {/* Trust Strip */}
-            <div className="w-full max-w-[720px] bg-surface-container-low rounded-xl px-6 py-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            <motion.div variants={fadeUp} className="w-full max-w-[720px] bg-surface-container-low rounded-xl px-6 py-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
               <div className="flex items-center gap-1.5 text-on-surface-variant font-sans font-semibold text-sm">
                 <span className="material-symbols-outlined text-primary text-[16px]">check</span>
                 <span>Personalized Experience</span>
@@ -81,19 +102,25 @@ export default function LandingPage() {
                 <span className="material-symbols-outlined text-primary text-[16px]">tune</span>
                 <span>Adaptive Psychometrics</span>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Editorial Preview Grid */}
-          <div className="w-full bg-surface-container-low py-24" id="insights">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="w-full bg-surface-container-low py-24" id="insights"
+          >
             <div className="max-w-[1200px] mx-auto px-5 lg:px-10">
-              <div className="flex flex-col items-center text-center max-w-[720px] mx-auto mb-20">
+              <motion.div variants={fadeUp} className="flex flex-col items-center text-center max-w-[720px] mx-auto mb-20">
                 <span className="font-sans text-[11px] font-bold text-primary uppercase tracking-widest mb-2">Your Profile Architecture</span>
                 <h2 className="font-heading text-3xl md:text-4xl text-on-surface mb-3">Everything You’ll Discover</h2>
                 <p className="font-sans text-base text-on-surface-variant">
                   A calibrated telemetry of patterns, baseline instincts, and operational rhythms that govern how you experience personal and collaborative reality.
                 </p>
-              </div>
+              </motion.div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
                   {
@@ -133,7 +160,7 @@ export default function LandingPage() {
                     icon: "trending_up"
                   }
                 ].map((item, idx) => (
-                  <div key={idx} className="bg-white rounded-2xl p-7 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+                  <motion.div variants={fadeUp} key={idx} className="bg-white rounded-2xl p-7 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
                     <div>
                       <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary mb-6">
                         <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
@@ -146,47 +173,33 @@ export default function LandingPage() {
                     <div className="mt-6 pt-3 flex items-center text-[11px] font-bold text-primary uppercase tracking-wider">
                       <span>{item.dim}</span>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* FAQ Section */}
-          <div className="max-w-[1200px] mx-auto px-5 lg:px-10 py-24" id="faq">
-            <div className="max-w-[680px] mx-auto text-center mb-16">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="max-w-[1200px] mx-auto px-5 lg:px-10 py-24" id="faq"
+          >
+            <motion.div variants={fadeUp} className="max-w-[680px] mx-auto text-center mb-16">
               <span className="font-sans text-[11px] font-bold text-primary uppercase tracking-widest mb-2 block">Common Questions</span>
               <h2 className="font-heading text-3xl md:text-4xl text-on-surface mb-3">Frequently Asked Questions</h2>
               <p className="font-sans text-base text-on-surface-variant">
                 Clarity on how the assessment works, data privacy, and the framework behind the system.
               </p>
+            </motion.div>
+            <div className="max-w-[840px] mx-auto w-full">
+              <motion.div variants={fadeUp}>
+                <FaqAccordion />
+              </motion.div>
             </div>
-            <div className="max-w-[840px] mx-auto flex flex-col gap-4">
-              {[
-                {
-                  q: "Is this based on astrology or mysticism?",
-                  a: "No. This tool is built entirely on deterministic psychometric frameworks, focusing on cognitive patterns, decision-making traits, and behavioral preferences. There are no predictive or supernatural elements."
-                },
-                {
-                  q: "How long does the assessment take?",
-                  a: "The assessment consists of situational prompts and typically takes about 3 to 4 minutes to complete. We encourage you to answer instinctively."
-                },
-                {
-                  q: "Is my data private?",
-                  a: "Absolutely. We do not sell your personal data. Your responses are strictly confidential and are only used to generate your personalized archetype report."
-                },
-                {
-                  q: "Do I have to pay to see my results?",
-                  a: "You receive your primary archetype, dimensional polarity gauges, and a foundational diagnostic report completely free. An optional in-depth interactive synthesis is available for purchase."
-                }
-              ].map((faq, i) => (
-                <div key={i} className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-[#eae8e3]">
-                  <h3 className="font-sans font-semibold text-lg text-on-surface mb-2">{faq.q}</h3>
-                  <p className="font-sans text-sm text-on-surface-variant leading-relaxed">{faq.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          </motion.div>
         </section>
       </main>
     </>

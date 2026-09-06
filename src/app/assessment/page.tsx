@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAssessment } from "@/context/AssessmentContext";
+import { motion } from "framer-motion";
 
 export default function AssessmentPage() {
   const { answers, setAnswer } = useAssessment();
@@ -52,7 +53,12 @@ export default function AssessmentPage() {
           </div>
 
           {/* Main Question Container */}
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm mb-8 border border-[#eae8e3]">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-3xl p-8 md:p-12 shadow-sm mb-8 border border-[#eae8e3]"
+          >
             <div className="mb-10">
               <span className="font-sans text-[11px] font-bold text-secondary uppercase tracking-wider block mb-2">Contextual Choice</span>
               <h2 className="font-heading text-[30px] md:text-[40px] text-on-surface font-semibold tracking-tight leading-tight">
@@ -64,7 +70,15 @@ export default function AssessmentPage() {
             </div>
 
             {/* Options Cluster */}
-            <div className="flex flex-col gap-4">
+            <motion.div 
+              className="flex flex-col gap-4"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+              }}
+            >
               {[
                 {
                   id: "exploring",
@@ -87,8 +101,14 @@ export default function AssessmentPage() {
                   desc: "Unstructured quietude, restorative solitary reading, meditation, or resting without performance or schedule expectations."
                 }
               ].map((opt) => (
-                <label 
+                <motion.label 
                   key={opt.id}
+                  variants={{
+                    hidden: { opacity: 0, x: -20 },
+                    visible: { opacity: 1, x: 0 }
+                  }}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
                   className={`group relative flex items-start gap-4 p-6 rounded-2xl cursor-pointer transition-all duration-200 shadow-sm border ${
                     selectedOption === opt.id 
                       ? "bg-[#fdf8f7] border-primary" 
@@ -107,7 +127,11 @@ export default function AssessmentPage() {
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center mt-0.5 transition-colors ${
                     selectedOption === opt.id ? "bg-primary-container" : "bg-surface-container-highest"
                   }`}>
-                    <div className={`w-2 h-2 rounded-full ${selectedOption === opt.id ? "bg-on-primary" : "bg-transparent"}`}></div>
+                    <motion.div 
+                      initial={false}
+                      animate={{ scale: selectedOption === opt.id ? 1 : 0 }}
+                      className="w-2 h-2 rounded-full bg-on-primary"
+                    />
                   </div>
                   <div className="flex flex-col">
                     <span className={`font-sans font-semibold text-lg transition-colors ${
@@ -119,9 +143,9 @@ export default function AssessmentPage() {
                       {opt.desc}
                     </span>
                   </div>
-                </label>
+                </motion.label>
               ))}
-            </div>
+            </motion.div>
 
             {/* Navigation Bar */}
             <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -137,7 +161,7 @@ export default function AssessmentPage() {
                 <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
               </button>
             </div>
-          </div>
+          </motion.div>
           
           <p className="text-center font-sans text-[11px] font-medium text-secondary mt-6">
             • There are no right or wrong answers — all responses are strictly private.
