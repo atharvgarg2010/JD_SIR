@@ -49,9 +49,13 @@ export async function POST(request: Request) {
     // 5. Construct Prompt for Gemini
     const { dimension_scores, raw_answers } = assessment
     
+    // Extract demographic variables
+    const userName = raw_answers['q1'] || 'the user';
+    const userDOB = raw_answers['q2'] || 'Unknown';
+    
     const prompt = `
-      You are an expert psychometrician and strategic advisor (JD SIR).
-      You are analyzing a user based on their assessment telemetry.
+      You are an expert psychometrician, astrologer, and strategic advisor (JD SIR).
+      You are analyzing a user named ${userName}, born on ${userDOB}, based on their assessment telemetry.
       
       Scores: ${JSON.stringify(dimension_scores)}
       Answers: ${JSON.stringify(raw_answers)}
@@ -59,6 +63,11 @@ export async function POST(request: Request) {
       Client Rules & Tone (JD SIR's instructions):
       ${custom_rules || 'Provide a highly detailed, professional, and actionable synthesis of their personality traits. Focus on cognitive patterns, decision-making, and growth trajectories.'}
       
+      CRITICAL INSTRUCTION:
+      You MUST analyze their Date of Birth (${userDOB}) to determine their core Astrological archetype (Sun sign, and likely planetary influences). 
+      You MUST synthesize this astrological profile with their psychological scores above. Explain how their astrological nature aligns (or conflicts) with their cognitive choices.
+      Address the user by their name (${userName}) occasionally to make the report deeply personal.
+
       Generate a comprehensive markdown report.
     `
 

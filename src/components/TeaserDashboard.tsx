@@ -6,7 +6,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import FreeQuestionHook from "./FreeQuestionHook";
 
-export default function TeaserDashboard() {
+interface TeaserDashboardProps {
+  onUnlock?: () => void;
+}
+
+export default function TeaserDashboard({ onUnlock }: TeaserDashboardProps) {
   const { answers } = useAssessment();
   const [profile, setProfile] = useState<PersonalityProfile | null>(null);
 
@@ -23,17 +27,62 @@ export default function TeaserDashboard() {
       
       {/* Header Profile Taste */}
       <div className="flex flex-col md:flex-row items-center gap-8">
-        <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-surface-container flex items-center justify-center shrink-0 shadow-inner">
-          <span className="text-6xl">{profile.crest}</span>
+        <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-surface-container-low flex flex-col items-center justify-center shrink-0 shadow-sm border border-[#eae8e3]">
+          <span className="material-symbols-outlined text-primary text-[56px] mb-2">explore</span>
+          <span className="font-sans text-[11px] font-bold text-on-surface uppercase tracking-widest">{profile.archetypeId}</span>
         </div>
-        <div className="text-center md:text-left flex flex-col gap-2">
+        <div className="text-center md:text-left flex flex-col gap-3">
           <span className="font-sans text-xs font-bold text-primary uppercase tracking-widest block">Primary Archetype Discovered</span>
-          <h2 className="font-heading text-4xl md:text-5xl font-bold text-on-surface">The {profile.title}</h2>
-          <p className="font-sans text-base text-on-surface-variant max-w-xl leading-relaxed mt-2">
-            You are fundamentally driven by {profile.traits[0].toLowerCase()} and {profile.traits[1].toLowerCase()}. 
-            Your telemetry indicates a highly distinct approach to problem-solving.
+          <h2 className="font-heading text-4xl md:text-5xl font-bold text-on-surface leading-tight">
+            {profile.primaryArchetype}
+          </h2>
+          <p className="font-sans text-[15px] text-on-surface-variant max-w-2xl leading-relaxed">
+            {profile.subtitle}
           </p>
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-2">
+            {profile.traits.map((trait, idx) => (
+              <span key={idx} className="px-3.5 py-1.5 rounded-full bg-surface-container border border-[#eae8e3] text-on-surface font-sans text-[13px] font-medium">
+                {trait}
+              </span>
+            ))}
+          </div>
         </div>
+      </div>
+
+      <div className="h-px bg-surface-variant/30 w-full"></div>
+
+      {/* Free Diagnostic Content (Gauges) */}
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-[#eae8e3]">
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="font-heading text-2xl font-semibold text-on-surface">Foundational Telemetry</h3>
+          <span className="font-sans text-[11px] font-bold text-secondary uppercase tracking-widest bg-surface-container px-3 py-1 rounded-full">Free Analysis</span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {profile.dimensions.slice(0, 4).map((dim, idx) => (
+            <div key={idx} className="flex flex-col gap-2">
+              <div className="flex items-center justify-between text-on-surface font-sans text-[14px]">
+                <span className="font-semibold">{dim.name}</span>
+                <span className="font-sans font-bold text-[15px] text-on-surface">
+                  {dim.score}%
+                </span>
+              </div>
+              <div className="w-full h-2.5 bg-surface-container rounded-full overflow-hidden relative">
+                <div 
+                  className={`h-full ${dim.colorClass} rounded-full`} 
+                  style={{ width: `${dim.score}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[11px] font-sans font-medium text-secondary mt-1">
+                <span>{dim.leftLabel}</span>
+                <span>{dim.rightLabel}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="font-sans text-[13px] text-on-surface-variant mt-8 leading-relaxed border-t border-surface-variant/30 pt-6">
+          {profile.description}
+        </p>
       </div>
 
       <div className="h-px bg-surface-variant/30 w-full"></div>
@@ -80,7 +129,10 @@ export default function TeaserDashboard() {
           <p className="font-sans text-sm md:text-base text-on-surface-variant max-w-md mb-8">
             Access your cognitive blindspots, career positioning vectors, relationship dynamics, and the permanent interactive AI dashboard.
           </p>
-          <button className="flex items-center gap-3 px-8 py-4 bg-[#31302f] hover:bg-primary text-on-primary font-sans font-semibold text-base rounded-xl shadow-xl transition-all transform hover:-translate-y-1">
+          <button 
+            onClick={onUnlock}
+            className="flex items-center gap-3 px-8 py-4 bg-[#31302f] hover:bg-primary text-on-primary font-sans font-semibold text-base rounded-xl shadow-xl transition-all transform hover:-translate-y-1"
+          >
             <span className="material-symbols-outlined text-[20px]">workspace_premium</span>
             Unlock Premium Report
           </button>
@@ -88,7 +140,7 @@ export default function TeaserDashboard() {
       </div>
 
       {/* The One-Question Hook */}
-      <FreeQuestionHook />
+      <FreeQuestionHook onUnlock={onUnlock} />
 
       <div className="mt-8 text-center pb-8">
         <Link href="/" className="font-sans text-sm font-semibold text-secondary hover:text-on-surface transition-colors flex items-center justify-center gap-2">

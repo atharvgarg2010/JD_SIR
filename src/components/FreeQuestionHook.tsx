@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function FreeQuestionHook() {
+export default function FreeQuestionHook({ onUnlock }: { onUnlock?: () => void }) {
   const [question, setQuestion] = useState("");
   const [state, setState] = useState<"idle" | "analyzing" | "result">("idle");
   const [progress, setProgress] = useState(0);
@@ -126,7 +126,10 @@ export default function FreeQuestionHook() {
               </div>
             </div>
 
-            <button className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#31302f] hover:bg-primary text-on-primary font-sans font-semibold text-sm rounded-xl shadow-md transition-all">
+            <button 
+              onClick={onUnlock}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#31302f] hover:bg-primary text-on-primary font-sans font-semibold text-sm rounded-xl shadow-md transition-all"
+            >
               <span className="material-symbols-outlined text-[18px]">workspace_premium</span>
               Unlock Full Report to Read Answer
             </button>
