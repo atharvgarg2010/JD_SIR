@@ -1,10 +1,33 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import FaqAccordion from "@/components/FaqAccordion";
+import AuthModal from "@/components/AuthModal";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LandingPage() {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+    };
+    fetchSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_, session) => {
+      setSession(session);
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
   const fadeUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
@@ -41,6 +64,21 @@ export default function LandingPage() {
             </nav>
           </div>
           <div className="flex items-center gap-4">
+            {session ? (
+              <Link
+                href="/profile"
+                className="hidden md:inline-flex items-center justify-center px-5 py-2.5 text-on-surface font-sans font-semibold text-sm hover:bg-surface-container rounded-xl transition-colors"
+              >
+                Profile
+              </Link>
+            ) : (
+              <button
+                onClick={() => setIsAuthModalOpen(true)}
+                className="hidden md:inline-flex items-center justify-center px-5 py-2.5 text-on-surface font-sans font-semibold text-sm hover:bg-surface-container rounded-xl transition-colors"
+              >
+                Sign In
+              </button>
+            )}
             <Link
               href="/assessment"
               className="inline-flex items-center justify-center px-6 py-3 bg-primary-container hover:bg-primary text-on-primary font-sans font-semibold text-sm rounded-xl shadow-sm transition-all transform hover:-translate-y-0.5"
@@ -202,6 +240,12 @@ export default function LandingPage() {
           </motion.div>
         </section>
       </main>
+
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        onSuccess={() => setIsAuthModalOpen(false)} 
+      />
     </>
   );
 }

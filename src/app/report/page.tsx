@@ -4,13 +4,66 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAssessment } from "@/context/AssessmentContext";
 import { calculatePersonality, PersonalityProfile } from "@/lib/engine";
-import UnlockModal from "@/components/UnlockModal";
+import { useRouter } from "next/navigation";
+import AuthModal from "@/components/AuthModal";
 import { motion } from "framer-motion";
+import { createClient } from "@/lib/supabase/client";
 
 export default function ReportPage() {
   const { answers } = useAssessment();
   const [profile, setProfile] = useState<PersonalityProfile | null>(null);
-  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
+  const router = useRouter();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false); // Default to false, check session first
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [hasCheckedSession, setHasCheckedSession] = useState(false);
+  const supabase = createClient();
+
+  const handleAuthSuccess = async () => {
+    setIsAuthModalOpen(false);
+    setIsGenerating(true);
+    
+    try {
+      // Fetch user to ensure auth session is active
+      const res = await fetch("/api/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          assessment_id: Object.values(answers).join("-"), // Safely stringify the answers object values
+          custom_rules: "Focus on psychological depth, career vectors, and high-performance behavioral habits."
+        })
+      });
+
+      if (res.ok) {
+        // Assume routing to the new premium dashboard
+        alert("Gemini Report Generated successfully! Redirecting...");
+      } else {
+        alert("Failed to generate report.");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  useEffect(() => {
+    // Check if user is already authenticated (e.g., returned from Google OAuth)
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session) {
+        // Already logged in, close modal and immediately generate report
+        setIsAuthModalOpen(false);
+        handleAuthSuccess();
+      } else {
+        // Not logged in, force modal open
+        setIsAuthModalOpen(true);
+      }
+      setHasCheckedSession(true);
+    };
+    
+    checkSession();
+  }, []);
 
   useEffect(() => {
     // Calculate the personality using the deterministic engine based on answers
@@ -185,11 +238,12 @@ export default function ReportPage() {
                     Discover how you make decisions, your relational tendencies, cognitive blindspots, and gain access to your personalized interactive AI Q&A.
                   </p>
                   <button 
-                    onClick={() => setIsUnlockModalOpen(true)}
-                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 bg-primary-container hover:bg-primary text-on-primary font-sans font-semibold text-[15px] rounded-xl shadow-md transition-all transform hover:-translate-y-0.5"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-[#31302f] hover:bg-primary text-on-primary font-sans font-semibold text-sm rounded-xl shadow-sm transition-colors"
+                    onClick={() => setIsAuthModalOpen(true)}
+                    disabled={isGenerating}
                   >
-                    <span>Unlock Full Profile</span>
-                    <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    <span className="material-symbols-outlined text-[18px]">workspace_premium</span>
+                    <span>{isGenerating ? "Generating..." : "Unlock Full Profile"}</span>
                   </button>
                 </div>
               </div>
@@ -199,7 +253,11 @@ export default function ReportPage() {
         </section>
       </main>
 
-      <UnlockModal isOpen={isUnlockModalOpen} onClose={() => setIsUnlockModalOpen(false)} />
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        onSuccess={handleAuthSuccess}
+      />
     </div>
   );
 }
